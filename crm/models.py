@@ -110,7 +110,11 @@ class Customer(models.Model):
                               (2, '缺勤'),
                               (3, '早退'))
         attendance =models.SmallIntegerField(choices=attendance_choices, default=0)
-        score_choice = (())
+        score_choice = ((100, "A+"),
+                        (90, "A"),
+                        (80, "B+"),
+                        (75, "B"),
+                        (70, "C+"))
     class UserProfile(models.Model):
         '''账号表'''
         pass
