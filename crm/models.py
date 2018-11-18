@@ -36,9 +36,7 @@ class Customer(models.Model):
             return self.name
     class CustomerFollowUp(models.Model):
         '''客户跟进表'''
-        '''客户跟进表'''
-        '''客户跟进表'''
-        '''客户跟进表'''
+
         #customer = models.ForeignKey("Customer")
         content = models.TextField(verbose_name="跟进内容")
         #consultant = models.ForeignKey("UserProfile")
