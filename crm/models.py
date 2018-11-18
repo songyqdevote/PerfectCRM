@@ -82,13 +82,25 @@ class Customer(models.Model):
         start_date = models.DateField(verbose_name="开班日期")
         end_date = models.DateField(verbose_name="结业日期", blank=True, null=True)
 
-        def __str__(self):
-            return "%s %s %s"%(self.branch, self.course, self.semester)
+        #def __str__(self):
+            #return "%s %s %s"%(self.branch, self.course, self.semester)
+        #class Meta:
+           # unique_together = ('branch', 'course', 'semester')
 
     class CourseRecord(models.Model):
         '''上课记录'''
-        pass
-
+        #from_class = models.ForeignKey("ClassList", verbose_name="班级")
+        day_num = models.PositiveIntegerField(verbose_name="第几节（天）")
+        #teacher = models.ForeignKey("UserProfile")
+        has_homework = models.BooleanField(default=True)
+        homework_title = models.CharField(max_length=128, blank=True, null=True)
+        homework_content = models.TextField(blank=True, null=True)
+        outline = models.TextField(verbose_name="本节课程大纲")
+        date = models.DateField(auto_now_add=True)
+        def __str__(self):
+            return "%s %s"%(self.from_class, self.day_num)
+        #class Meta:
+        #    unique_together = ("from_class", "day_num")
     class StudyRecord(models.Model):
         '''学习记录'''
         pass
