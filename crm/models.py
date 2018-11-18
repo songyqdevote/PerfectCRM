@@ -55,11 +55,26 @@ class Customer(models.Model):
 
     class Course(models.Model):
         '''课程表'''
-        pass
+        name = models.CharField(max_length=64, unique=True)
+        price = models.PositiveSmallIntegerField()
+        period = models.PositiveIntegerField(verbose_name="周期（月）")
+        outline = models.TextField()
+
+        def __str__(self):
+            return self.name
+    class Branch(models.Model):
+        '''校区'''
+        name = models.CharField(max_length=128, unique=True)
+        addr = models.CharField(max_length=128)
+        def __str__(self):
+            return self.name
 
     class ClassList(models.Model):
         '''班级表'''
-        pass
+        #branch = models.ForeignKey("Branch")
+        #course = models.ForeignKey("Course")
+        semester = models.PositiveIntegerField(verbose_name="学期")
+        teachers = models.ManyToManyField("UserProfile")
 
     class CourseRecord(models.Model):
         '''上课记录'''
