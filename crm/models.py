@@ -51,7 +51,7 @@ class Customer(models.Model):
         intention = models.SmallIntegerField(choices=intention_choices)
         date = models.DateTimeField(auto_now_add=True)
         def __str__(self):
-            return "<%s : %s>" %(self.customer.qq,self.intention)
+            return "<%s : %s>" %(self.customer.qq, self.intention)
 
     class Course(models.Model):
         '''课程表'''
@@ -71,10 +71,19 @@ class Customer(models.Model):
 
     class ClassList(models.Model):
         '''班级表'''
-        #branch = models.ForeignKey("Branch")
+        #branch = models.ForeignKey("Branch",verbose_name="校区")
         #course = models.ForeignKey("Course")
+        class_type_choices = ((0, '面授（脱产）'),
+                              (1, '面授（周末）'),
+                              (2, '网络班'))
+        class_type = models.SmallIntegerField(choices=class_type_choices, verbose_name="班级类型")
         semester = models.PositiveIntegerField(verbose_name="学期")
         teachers = models.ManyToManyField("UserProfile")
+        start_date = models.DateField(verbose_name="开班日期")
+        end_date = models.DateField(verbose_name="结业日期", blank=True, null=True)
+
+        def __str__(self):
+            return "%s %s %s"%(self.branch, self.course, self.semester)
 
     class CourseRecord(models.Model):
         '''上课记录'''
