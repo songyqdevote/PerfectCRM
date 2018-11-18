@@ -103,8 +103,14 @@ class Customer(models.Model):
         #    unique_together = ("from_class", "day_num")
     class StudyRecord(models.Model):
         '''学习记录'''
-        pass
-
+        #student = models.ForeignKey("Enrollment")
+        #course_record = models.ForeignKey("CourseRecord")
+        attendance_choices = ((0, '已签到'),
+                              (1, '迟到'),
+                              (2, '缺勤'),
+                              (3, '早退'))
+        attendance =models.SmallIntegerField(choices=attendance_choices, default=0)
+        score_choice = (())
     class UserProfile(models.Model):
         '''账号表'''
         pass
