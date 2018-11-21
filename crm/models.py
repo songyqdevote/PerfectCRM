@@ -114,15 +114,48 @@ class Customer(models.Model):
                         (90, "A"),
                         (80, "B+"),
                         (75, "B"),
-                        (70, "C+"))
-    class UserProfile(models.Model):
-        '''账号表'''
-        pass
+                        (70, "C+"),
+                        (-50, "D"),
+                        (-100, "copy"),
+                        (0, "N/A"))
+        score = models.SmallIntegerField(choices=score_choice, default=0)
+        memo = models.TextField(blank=True, null=True)
+        date = models.DateField(auto_now_add=True)
+
+        def __str__(self):
+            pass
+            #return "%s %s %s"%(self.student, self.course_record, self.score)
+
 
     class Enrollment(models.Model):
         '''报名表'''
-        pass
+        #customer = models.ForeignKey("Customer")
+       # enrolled_class = models.ForeignKey("ClassList", verbose_name="所报班级")
+        #consultant = models.ForeignKey("UserProfile", verbose_name="课程顾问")
+        contract_agreed = models.BooleanField(default=False, verbose_name= "学员已同意合同")
+        contract_approved = models.BooleanField(default=False, verbose_name="合同已审核")
+        date = models.DateTimeField(auto_now_add=True)
+        def __str__(self):
+            pass
+            #return "%s %s"  %(self.customer, self.enrolled_class)
+        class Meta:
+            pass
+            #unique_together = ("customer", "enrolled_class")
 
+    class Payment(models.Model):
+        '''缴费记录'''
+        #customer = models.ForeignKey("Customer")
+        #course = models.ForeignKey("Course",verbose_name="所报课程")
+        amount = models.PositiveIntegerField(verbose_name="数额", default=500)
+        #consultant = models.ForeignKey("UserProfile")
+        date = models.DateTimeField(auto_now_add=True)
+
+        def __str__(self):
+            pass
+            #return "%s %s" &(sel.customer,self.amout)
+    class UserProfile(models.Model):
+        '''账号表'''
+        pass
     class Role(models.Model):
         '''角色表'''
         pass
