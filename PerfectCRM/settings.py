@@ -88,7 +88,7 @@ DATABASES = {
         'NAME': 'PerfectCRM',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',    # 主机
         'PORT': '3306',
     }
 }

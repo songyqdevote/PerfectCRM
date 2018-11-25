@@ -28,8 +28,8 @@ class Customer(models.Model):
     consultant = models.ForeignKey("UserProfile", on_delete=models.CASCADE)
     memo = models.TextField(blank=True,null=True)
     date = models.DateTimeField(auto_now_add=True)
-class Tag(models.Model):
-    name = models.CharField(unique=True, max_length=32)
+    class Tag(models.Model):
+        name = models.CharField(unique=True, max_length=32)
     def __str__(self):
         return self.name
 class CustomerFollowUp(models.Model):
