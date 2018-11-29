@@ -32,6 +32,8 @@ class Customer(models.Model):
         name = models.CharField(unique=True, max_length=32)
     def __str__(self):
         return self.name
+    class Meta:
+        verbose_name = "客户表"
 class CustomerFollowUp(models.Model):
     '''客户跟进表'''
     customer = models.ForeignKey("Customer", on_delete=models.CASCADE)
