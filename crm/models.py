@@ -21,19 +21,27 @@ class Customer(models.Model):
     )
     source = models.SmallIntegerField(choices=source_choices)
     referral_from = models.CharField(verbose_name="转介绍人qq", max_length = 64, blank = True, null = True)
-
     consult_course = models.ForeignKey("Course",verbose_name="咨询课程", on_delete=models.CASCADE)
     content = models.TextField(verbose_name="咨询详情")
     tags = models.ManyToManyField("Tag",blank = True,null=True)
     consultant = models.ForeignKey("UserProfile", on_delete=models.CASCADE)
     memo = models.TextField(blank=True,null=True)
     date = models.DateTimeField(auto_now_add=True)
-    class Tag(models.Model):
-        name = models.CharField(unique=True, max_length=32)
+
+    def __str__(self):
+        return self.qq
+    class Meta:
+        verbose_name = "客户表"
+        verbose_name_plural = "客户表"
+
+class Tag(models.Model):
+    name = models.CharField(unique=True, max_length=32)
     def __str__(self):
         return self.name
     class Meta:
-        verbose_name = "客户表"
+        verbose_name = "标签"
+        verbose_name_plural = "标签"
+
 class CustomerFollowUp(models.Model):
     '''客户跟进表'''
     customer = models.ForeignKey("Customer", on_delete=models.CASCADE)
@@ -51,6 +59,9 @@ class CustomerFollowUp(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return "<%s : %s>" %(self.customer.qq, self.intention)
+    class Meta:
+        verbose_name = "客户跟进"
+        verbose_name_plural = "客户跟进"
 
 class Course(models.Model):
     '''课程表'''
@@ -61,12 +72,19 @@ class Course(models.Model):
 
     def __str__(self):
         return self.name
+    class Meta:
+        verbose_name = "课程表"
+        verbose_name_plural = "课程表"
+
 class Branch(models.Model):
     '''校区'''
     name = models.CharField(max_length=128, unique=True)
     addr = models.CharField(max_length=128)
     def __str__(self):
         return self.name
+    class Meta:
+        verbose_name = "校区"
+        verbose_name_plural = "校区"
 
 class ClassList(models.Model):
     '''班级表'''
@@ -85,6 +103,8 @@ class ClassList(models.Model):
         return "%s %s %s"%(self.branch, self.course, self.semester)
     class Meta:
         unique_together = ('branch', 'course', 'semester')
+        verbose_name = "班级"
+        verbose_name_plural = "班级"
 
 class CourseRecord(models.Model):
     '''上课记录'''
@@ -100,6 +120,8 @@ class CourseRecord(models.Model):
         return "%s %s"%(self.from_class, self.day_num)
     class Meta:
         unique_together = ("from_class", "day_num")
+        verbose_name = "上课记录"
+        verbose_name_plural = "上课记录"
 class StudyRecord(models.Model):
     '''学习记录'''
     student = models.ForeignKey("Enrollment", on_delete=models.CASCADE)
@@ -123,6 +145,10 @@ class StudyRecord(models.Model):
 
     def __str__(self):
         return "%s %s %s"%(self.student, self.course_record, self.score)
+    class Meta:
+        unique_together = ("student", "course_record")
+        verbose_name = "学习记录"
+        verbose_name_plural = "学习记录"
 
 
 class Enrollment(models.Model):
@@ -138,6 +164,8 @@ class Enrollment(models.Model):
         return "%s %s"  %(self.customer, self.enrolled_class)
     class Meta:
         unique_together = ("customer", "enrolled_class")
+        verbose_name = "报名表"
+        verbose_name_plural = "报名表"
 
 class Payment(models.Model):
     '''缴费记录'''
@@ -148,8 +176,10 @@ class Payment(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        pass
-        return "%s %s" &(sel.customer,self.amout)
+        return "%s %s" &(self.customer,self.amout)
+    class Meta:
+        verbose_name = "缴费表"
+        verbose_name_plural = "缴费表"
 class UserProfile(models.Model):
     '''账号表'''
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -158,8 +188,12 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.name
+
 class Role(models.Model):
     '''角色表'''
     name = models.CharField(max_length=32, unique=True)
     def __str__(self):
         return self.name
+    class Meta:
+        verbose_name = "角色表"
+        verbose_name_plural = "角色表"
