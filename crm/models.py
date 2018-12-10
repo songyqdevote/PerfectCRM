@@ -20,27 +20,18 @@ class Customer(models.Model):
         (6, '市场推广'),
     )
     source = models.SmallIntegerField(choices=source_choices)
-    referral_from = models.CharField(verbose_name="转介绍人qq", max_length = 64, blank = True, null = True)
-    consult_course = models.ForeignKey("Course",verbose_name="咨询课程", on_delete=models.CASCADE)
+    referral_from = models.CharField(verbose_name="转介绍人qq", max_length=64, blank=True, null=True)
+
+    consult_course = models.ForeignKey("Course", verbose_name="咨询课程", on_delete=models.CASCADE)
     content = models.TextField(verbose_name="咨询详情")
-    tags = models.ManyToManyField("Tag",blank = True,null=True)
+    tags = models.ManyToManyField("Tag", blank=True, null=True)
     consultant = models.ForeignKey("UserProfile", on_delete=models.CASCADE)
-    memo = models.TextField(blank=True,null=True)
+    memo = models.TextField(blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.qq
-    class Meta:
-        verbose_name = "客户表"
-        verbose_name_plural = "客户表"
 
-class Tag(models.Model):
-    name = models.CharField(unique=True, max_length=32)
-    def __str__(self):
-        return self.name
-    class Meta:
-        verbose_name = "标签"
-        verbose_name_plural = "标签"
 
 class CustomerFollowUp(models.Model):
     '''客户跟进表'''
@@ -54,14 +45,13 @@ class CustomerFollowUp(models.Model):
                          (3, '已在其他机构报名'),
                          (4, '已报名'),
                          (5, '已拉黑'),
-    )
+                         )
     intention = models.SmallIntegerField(choices=intention_choices)
     date = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
-        return "<%s : %s>" %(self.customer.qq, self.intention)
-    class Meta:
-        verbose_name = "客户跟进"
-        verbose_name_plural = "客户跟进"
+        return "<%s : %s>" % (self.customer.qq, self.intention)
+
 
 class Course(models.Model):
     '''课程表'''
@@ -72,23 +62,20 @@ class Course(models.Model):
 
     def __str__(self):
         return self.name
-    class Meta:
-        verbose_name = "课程表"
-        verbose_name_plural = "课程表"
+
 
 class Branch(models.Model):
     '''校区'''
     name = models.CharField(max_length=128, unique=True)
     addr = models.CharField(max_length=128)
+
     def __str__(self):
         return self.name
-    class Meta:
-        verbose_name = "校区"
-        verbose_name_plural = "校区"
+
 
 class ClassList(models.Model):
     '''班级表'''
-    branch = models.ForeignKey("Branch",verbose_name="校区", on_delete=models.CASCADE)
+    branch = models.ForeignKey("Branch", verbose_name="校区", on_delete=models.CASCADE)
     course = models.ForeignKey("Course", on_delete=models.CASCADE)
     class_type_choices = ((0, '面授（脱产）'),
                           (1, '面授（周末）'),
@@ -100,11 +87,11 @@ class ClassList(models.Model):
     end_date = models.DateField(verbose_name="结业日期", blank=True, null=True)
 
     def __str__(self):
-        return "%s %s %s"%(self.branch, self.course, self.semester)
+        return "%s %s %s" % (self.branch, self.course, self.semester)
+
     class Meta:
         unique_together = ('branch', 'course', 'semester')
-        verbose_name = "班级"
-        verbose_name_plural = "班级"
+
 
 class CourseRecord(models.Model):
     '''上课记录'''
@@ -116,12 +103,14 @@ class CourseRecord(models.Model):
     homework_content = models.TextField(blank=True, null=True)
     outline = models.TextField(verbose_name="本节课程大纲")
     date = models.DateField(auto_now_add=True)
+
     def __str__(self):
-        return "%s %s"%(self.from_class, self.day_num)
+        return "%s %s" % (self.from_class, self.day_num)
+
     class Meta:
         unique_together = ("from_class", "day_num")
-        verbose_name = "上课记录"
-        verbose_name_plural = "上课记录"
+
+
 class StudyRecord(models.Model):
     '''学习记录'''
     student = models.ForeignKey("Enrollment", on_delete=models.CASCADE)
@@ -130,7 +119,7 @@ class StudyRecord(models.Model):
                           (1, '迟到'),
                           (2, '缺勤'),
                           (3, '早退'))
-    attendance =models.SmallIntegerField(choices=attendance_choices, default=0)
+    attendance = models.SmallIntegerField(choices=attendance_choices, default=0)
     score_choice = ((100, "A+"),
                     (90, "A"),
                     (80, "B+"),
@@ -144,11 +133,7 @@ class StudyRecord(models.Model):
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return "%s %s %s"%(self.student, self.course_record, self.score)
-    class Meta:
-        unique_together = ("student", "course_record")
-        verbose_name = "学习记录"
-        verbose_name_plural = "学习记录"
+        return "%s %s %s" % (self.student, self.course_record, self.score)
 
 
 class Enrollment(models.Model):
@@ -156,30 +141,31 @@ class Enrollment(models.Model):
     customer = models.ForeignKey("Customer", on_delete=models.CASCADE)
     enrolled_class = models.ForeignKey("ClassList", verbose_name="所报班级", on_delete=models.CASCADE)
     consultant = models.ForeignKey("UserProfile", verbose_name="课程顾问", on_delete=models.CASCADE)
-    contract_agreed = models.BooleanField(default=False, verbose_name= "学员已同意合同")
+    contract_agreed = models.BooleanField(default=False, verbose_name="学员已同意合同")
     contract_approved = models.BooleanField(default=False, verbose_name="合同已审核")
     date = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         pass
-        return "%s %s"  %(self.customer, self.enrolled_class)
+        return "%s %s" % (self.customer, self.enrolled_class)
+
     class Meta:
         unique_together = ("customer", "enrolled_class")
-        verbose_name = "报名表"
-        verbose_name_plural = "报名表"
+
 
 class Payment(models.Model):
     '''缴费记录'''
     customer = models.ForeignKey("Customer", on_delete=models.CASCADE)
-    course = models.ForeignKey("Course",verbose_name="所报课程", on_delete=models.CASCADE)
+    course = models.ForeignKey("Course", verbose_name="所报课程", on_delete=models.CASCADE)
     amount = models.PositiveIntegerField(verbose_name="数额", default=500)
     consultant = models.ForeignKey("UserProfile", on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return "%s %s" &(self.customer,self.amout)
-    class Meta:
-        verbose_name = "缴费表"
-        verbose_name_plural = "缴费表"
+        pass
+        return "%s %s" % (self.customer, self.amout)
+
+
 class UserProfile(models.Model):
     '''账号表'''
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -189,11 +175,20 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.name
 
+
 class Role(models.Model):
     '''角色表'''
     name = models.CharField(max_length=32, unique=True)
+
     def __str__(self):
         return self.name
+
+
+class Tag(models.Model):
+    name = models.CharField(unique=True, max_length=32)
+
+    def __str__(self):
+        return self.name
+
     class Meta:
-        verbose_name = "角色表"
-        verbose_name_plural = "角色表"
+        verbose_name = '标签'
