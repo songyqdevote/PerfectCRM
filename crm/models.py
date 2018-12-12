@@ -192,3 +192,7 @@ class Tag(models.Model):
 
     class Meta:
         verbose_name = '标签'
+class Menu(models.Model):
+    name = models.ChairField(max_length=32)
+    url_name = models.CharField(max_length=64)
+
