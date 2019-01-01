@@ -179,10 +179,13 @@ class UserProfile(models.Model):
 class Role(models.Model):
     '''角色表'''
     name = models.CharField(max_length=32, unique=True)
+    menus = models.ManyToManyField("Menu",blank=True)
+
 
     def __str__(self):
         return self.name
-
+    class Meta:
+        verbose_name_plural = "角色"
 
 class Tag(models.Model):
     name = models.CharField(unique=True, max_length=32)
@@ -192,7 +195,12 @@ class Tag(models.Model):
 
     class Meta:
         verbose_name = '标签'
+
 class Menu(models.Model):
-    name = models.ChairField(max_length=32)
+    '''菜单'''
+    name = models.CharField(max_length=32)
     url_name = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.name
 
