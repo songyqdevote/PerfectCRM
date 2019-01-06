@@ -25,12 +25,29 @@ class Customer(models.Model):
     consult_course = models.ForeignKey("Course", verbose_name="咨询课程", on_delete=models.CASCADE)
     content = models.TextField(verbose_name="咨询详情")
     tags = models.ManyToManyField("Tag", blank=True, null=True)
+    status_choices = ((0, '已报名'), (1, '未报名'),)
+    status = models.SmallIntegerField(choices=status_choices, default=1)
     consultant = models.ForeignKey("UserProfile", on_delete=models.CASCADE)
     memo = models.TextField(blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.qq
+
+    class Meta:
+        verbose_name = "客户表"
+        verbose_name_plural = "客户表"
+
+
+class Tag(models.Model):
+    name = models.CharField(unique=True, max_length=32)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "标签"
+        verbose_name_plural = "标签"
 
 
 class CustomerFollowUp(models.Model):
@@ -52,6 +69,10 @@ class CustomerFollowUp(models.Model):
     def __str__(self):
         return "<%s : %s>" % (self.customer.qq, self.intention)
 
+    class Meta:
+        verbose_name = "客户跟进表"
+        verbose_name_plural = "客户跟进表"
+
 
 class Course(models.Model):
     '''课程表'''
@@ -63,6 +84,10 @@ class Course(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "课程表"
+        verbose_name_plural = "课程表"
+
 
 class Branch(models.Model):
     '''校区'''
@@ -71,6 +96,10 @@ class Branch(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "校区"
+        verbose_name_plural = "校区"
 
 
 class ClassList(models.Model):
@@ -91,12 +120,14 @@ class ClassList(models.Model):
 
     class Meta:
         unique_together = ('branch', 'course', 'semester')
+        verbose_name = "班级"
+        verbose_name_plural = "班级"
 
 
 class CourseRecord(models.Model):
     '''上课记录'''
     from_class = models.ForeignKey("ClassList", verbose_name="班级", on_delete=models.CASCADE)
-    day_num = models.PositiveIntegerField(verbose_name="第几节（天）")
+    day_num = models.PositiveSmallIntegerField(verbose_name="第几节（天）")
     teacher = models.ForeignKey("UserProfile", on_delete=models.CASCADE)
     has_homework = models.BooleanField(default=True)
     homework_title = models.CharField(max_length=128, blank=True, null=True)
@@ -109,6 +140,8 @@ class CourseRecord(models.Model):
 
     class Meta:
         unique_together = ("from_class", "day_num")
+        verbose_name = "上课记录"
+        verbose_name_plural = "上课记录"
 
 
 class StudyRecord(models.Model):
@@ -135,6 +168,11 @@ class StudyRecord(models.Model):
     def __str__(self):
         return "%s %s %s" % (self.student, self.course_record, self.score)
 
+    class Meta:
+        unique_together = ('student', 'course_record')
+        verbose_name = "学习记录"
+        verbose_name_plural = "学习记录"
+
 
 class Enrollment(models.Model):
     '''报名表'''
@@ -146,11 +184,12 @@ class Enrollment(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        pass
         return "%s %s" % (self.customer, self.enrolled_class)
 
     class Meta:
         unique_together = ("customer", "enrolled_class")
+        verbose_name = "报名表"
+        verbose_name_plural = "报名表"
 
 
 class Payment(models.Model):
@@ -162,8 +201,11 @@ class Payment(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        pass
         return "%s %s" % (self.customer, self.amout)
+
+    class Meta:
+        verbose_name = "缴费记录"
+        verbose_name_plural = "缴费记录"
 
 
 class UserProfile(models.Model):
@@ -179,22 +221,14 @@ class UserProfile(models.Model):
 class Role(models.Model):
     '''角色表'''
     name = models.CharField(max_length=32, unique=True)
-    menus = models.ManyToManyField("Menu",blank=True)
-
+    menus = models.ManyToManyField("Menu", blank=True)
 
     def __str__(self):
         return self.name
+
     class Meta:
         verbose_name_plural = "角色"
 
-class Tag(models.Model):
-    name = models.CharField(unique=True, max_length=32)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = '标签'
 
 class Menu(models.Model):
     '''菜单'''
@@ -203,4 +237,3 @@ class Menu(models.Model):
 
     def __str__(self):
         return self.name
-
